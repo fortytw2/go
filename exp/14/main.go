@@ -26,6 +26,14 @@ type GoPackages struct {
 	gist7802150.DepNode2
 }
 
+func (this *GoPackages) Len() int { return len(this.Entries) }
+func (this *GoPackages) Less(i, j int) bool {
+	return this.Entries[i].Bpkg.ImportPath < this.Entries[j].Bpkg.ImportPath
+}
+func (this *GoPackages) Swap(i, j int) {
+	this.Entries[i], this.Entries[j] = this.Entries[j], this.Entries[i]
+}
+
 func (this *GoPackages) Update() {
 	// TODO: Have a source?
 
@@ -53,6 +61,10 @@ func (this *GoPackages) Update() {
 			}
 		}
 	}
+
+	// TODO. This doesn't quite work at this level because it's too late and messes up intra-folder sorting.
+	//       Should override sort.Strings(names) in readDirNames of filepath.Walk to achieve what I had in mind.
+	//sort.Sort(this)
 }
 
 func (this *GoPackages) List() []*gist7480523.GoPackage {
